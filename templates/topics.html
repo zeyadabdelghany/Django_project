@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ board.name }}{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item "><a href="{% url 'home' %}">Boards</a> </li>
+    <li class="breadcrumb-item active">{{ board.name }}</li>
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary my-1">New topic</a>
+    <table class="table">
+       <thead class="thead-dark">
+       <tr>
+           <th>Topic</th>
+           <th>Created by</th>
+           <th>Posts</th>
+           <th>Views</th>
+           <th>Created_dt</th>
+
+       </tr>
+       </thead>
+       <tbody>
+    {% for topic in topics  %}
+        <tr>
+            <td><a href="{% url 'board_posts' board.pk topic.pk %}">{{ topic.subject }}</a></td>
+            <td>{{ topic.created_by.username }}</td>
+            <td>{{ topic.comments }}</td>
+            <td>{{ topic.views }}</td>
+            <td>{{ topic.created_dt }}</td>
+        </tr>
+
+    {% endfor %}
+
+       </tbody>
+    </table>
+    <div class="row">
+      <ul class="pagination">
+          {% if topics.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ topics.previous_page_number }}">Previous</a>
+              </li>
+          {% endif %}
+        {% for page_num in topics.paginator.page_range  %}
+           {% if topics.number == page_num %}
+               <li class="page-item">
+               {{ page_num }}
+               <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+               </li>
+           {% endif %}
+
+        {% endfor %}
+        {% if topics.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ topics.next_page_number }}">Next</a>
+              </li>
+           {% else %}
+            <li class="page-item disabled"><span>Next</span></li>
+          {% endif %}
+         
+
+      </ul>
+
+    </div>
+{% endblock %}
